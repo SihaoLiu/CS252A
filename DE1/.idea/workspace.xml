@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ee271e43-f6d0-4d2d-85bc-d2561317f90b" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
+  </component>
+  <component name="ProjectId" id="1WivoTLUqXI9UksCpP56gD8cGrN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/syn/rtl-src" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.gen_CLA_mlevel">
+    <configuration name="gen_CLA" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="gen_CLA" />
+      <module name="DE1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gen_CLA_mlevel" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="gen_CLA_mlevel" />
+      <module name="DE1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gen_CRA" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="gen_CRA" />
+      <module name="DE1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gen_CSK" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="gen_CSK" />
+      <module name="DE1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gen_comp_switch" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="gen_comp_switch" />
+      <module name="DE1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.gen_CLA_mlevel" />
+        <item itemvalue="Application.gen_CLA" />
+        <item itemvalue="Application.gen_CSK" />
+        <item itemvalue="Application.gen_CRA" />
+        <item itemvalue="Application.gen_comp_switch" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SbtLocalSettings">
+    <option name="availableProjects">
+      <map>
+        <entry>
+          <key>
+            <ExternalProjectPojo>
+              <option name="name" value="DE1" />
+              <option name="path" value="$PROJECT_DIR$" />
+            </ExternalProjectPojo>
+          </key>
+          <value>
+            <list>
+              <ExternalProjectPojo>
+                <option name="name" value="de1 [file:/home/sihao/CS252A/DE1/]" />
+                <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+              <ExternalProjectPojo>
+                <option name="name" value="DE1-build" />
+                <option name="path" value="$PROJECT_DIR$/project" />
+              </ExternalProjectPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="modificationStamps">
+      <map>
+        <entry key="$PROJECT_DIR$/build.sbt" value="1703980337" />
+        <entry key="$PROJECT_DIR$/project/build.properties" value="3666975207" />
+      </map>
+    </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$USER_HOME$/rocket-chip" value="PREVIEW" />
+        <entry key="$USER_HOME$/ss-stack/ss-cgra-gen" value="PREVIEW" />
+      </map>
+    </option>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ee271e43-f6d0-4d2d-85bc-d2561317f90b" name="Default Changelist" comment="" />
+      <created>1579645405176</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1579645405176</updated>
+      <workItem from="1579645408532" duration="3157000" />
+      <workItem from="1579650296749" duration="22106000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.v" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="693" y="280" width="524" height="484" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog" timestamp="1579678215614">
+      <screen x="0" y="27" width="1920" height="1020" />
+    </state>
+    <state x="693" y="280" width="524" height="484" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/1920.0.1920.1080/0.27.1920.1020@0.27.1920.1020" timestamp="1579678215614" />
+    <state x="713" y="383" width="494" height="290" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1579649380342">
+      <screen x="0" y="27" width="1920" height="1020" />
+    </state>
+    <state x="713" y="383" width="494" height="290" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/1920.0.1920.1080/0.27.1920.1020@0.27.1920.1020" timestamp="1579649380342" />
+    <state width="1895" height="964" key="GridCell.Tab.0.bottom" timestamp="1579677838662">
+      <screen x="0" y="27" width="1920" height="1020" />
+    </state>
+    <state width="1895" height="964" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.27.1920.1020@0.27.1920.1020" timestamp="1579677838662" />
+    <state width="1895" height="964" key="GridCell.Tab.0.center" timestamp="1579677838662">
+      <screen x="0" y="27" width="1920" height="1020" />
+    </state>
+    <state width="1895" height="964" key="GridCell.Tab.0.center/1920.0.1920.1080/0.27.1920.1020@0.27.1920.1020" timestamp="1579677838662" />
+    <state width="1895" height="964" key="GridCell.Tab.0.left" timestamp="1579677838662">
+      <screen x="0" y="27" width="1920" height="1020" />
+    </state>
+    <state width="1895" height="964" key="GridCell.Tab.0.left/1920.0.1920.1080/0.27.1920.1020@0.27.1920.1020" timestamp="1579677838662" />
+    <state width="1895" height="964" key="GridCell.Tab.0.right" timestamp="1579677838662">
+      <screen x="0" y="27" width="1920" height="1020" />
+    </state>
+    <state width="1895" height="964" key="GridCell.Tab.0.right/1920.0.1920.1080/0.27.1920.1020@0.27.1920.1020" timestamp="1579677838662" />
+    <state x="623" y="229" width="672" height="678" key="search.everywhere.popup" timestamp="1579664333229">
+      <screen x="0" y="27" width="1920" height="1020" />
+    </state>
+    <state x="623" y="229" width="672" height="678" key="search.everywhere.popup/1920.0.1920.1080/0.27.1920.1020@0.27.1920.1020" timestamp="1579664333229" />
+  </component>
+</project>
