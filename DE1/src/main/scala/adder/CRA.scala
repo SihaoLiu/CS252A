@@ -1,21 +1,10 @@
+package adder
+
 import chisel3._
-import component.FA1
+import component.{FA1, StdAddIO_gp}
 
 class CRA(data_width : Int) extends Module{
-  val io = IO(new Bundle{
-    // Input
-    val x = Input(UInt(data_width.W))
-    val y = Input(UInt(data_width.W))
-    val cin = Input(Bool())
-
-    // Output
-    val s = Output(UInt(data_width.W))
-    val cout = Output(Bool())
-
-    // G, P
-    val g = Output(UInt(data_width.W))
-    val p = Output(UInt(data_width.W))
-  })
+  val io = IO(new StdAddIO_gp(data_width))
 
   // Create Full Adder Chain
   val fa_chain = for(bit_idx <- 0 until data_width)yield{
@@ -42,9 +31,18 @@ class CRA(data_width : Int) extends Module{
   io.p := VecInit(fa_chain.map(_.p)).asUInt()
 }
 
+import DEUtil.DEUtil._
+
 object gen_CRA extends App{
-  chisel3.Driver.execute(args,()=>{
-    val module = new CRA(64)
-    module
+  args.foreach(println)
+
+  private def gen(data_width : Int, Args:Array[String]) =
+    chisel3.Driver.execute(Args,()=>new CRA(data_width))
+
+  val data_widths = List(8,16,32,64)
+
+  data_widths.foreach(dw=>{
+    val Args : Array[String] = args ++ Array("-o", s"CRA_$dw")
+    gen(dw, Args)
   })
 }

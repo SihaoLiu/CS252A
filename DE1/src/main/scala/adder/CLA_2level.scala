@@ -1,20 +1,14 @@
+package adder
+
 import chisel3._
 import chisel3.util._
+import component.{CLG, StdAddIO}
 
 class CLA_2level(data_width : Int, group_width : Int) extends Module{
 
-  val io = IO(new Bundle{
-    // Input
-    val x: UInt = Input(UInt(data_width.W))
-    val y: UInt = Input(UInt(data_width.W))
-    val cin: Bool = Input(Bool())
+  val io = IO(new StdAddIO(data_width))
 
-    // Output
-    val s: UInt = Output(UInt(data_width.W))
-    val cout: Bool = Output(Bool())
-  })
-
-  // Create CLA, Connect Input
+  // Create adder.CLA, Connect Input
   val num_CLA = data_width / group_width
   val CLAs = for(idx <- 0 until num_CLA) yield {
     val cla = Module(new CLA(group_width)).io
@@ -24,6 +18,20 @@ class CLA_2level(data_width : Int, group_width : Int) extends Module{
       cla.cin := io.cin
     }
     cla
+  }
+
+  // Second Level CLG
+  val clg = Module(new CLG(num_CLA)).io
+  clg.cin := io.cin
+  clg.g := VecInit(CLAs.map(_.G)).asUInt()
+  clg.a := VecInit(CLAs.map(_.A)).asUInt()
+  for(clg_cout_idx <- 0 until num_CLA){
+    val cout = clg.c(clg_cout_idx)
+    if(clg_cout_idx < num_CLA - 1){
+      CLAs(clg_cout_idx + 1).cin := cout
+    }else{
+      io.cout := cout
+    }
   }
 
   // Connect Sum

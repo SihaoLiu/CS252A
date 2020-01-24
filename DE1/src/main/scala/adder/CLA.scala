@@ -1,24 +1,12 @@
+package adder
+
 import DEUtil.DEUtil.moveRenameFile
 import chisel3._
-import chisel3.util._
-import component.{CLG, GPA1}
+import component.{CLG, GPA1, StdAddIO_GA}
 
 class CLA(data_width : Int) extends Module{
 
-  val io = IO(new Bundle{
-    // Input
-    val x: UInt = Input(UInt(data_width.W))
-    val y: UInt = Input(UInt(data_width.W))
-    val cin: Bool = Input(Bool())
-
-    // Output
-    val s: UInt = Output(UInt(data_width.W))
-    val cout: Bool = Output(Bool())
-
-    // G, A
-    val G: Bool = Output(Bool())
-    val A: Bool = Output(Bool())
-  })
+  val io = IO(new StdAddIO_GA(data_width))
 
   // GPA chain
   val gpa_chain = for(idx <- 0 until data_width) yield{
@@ -55,15 +43,11 @@ class CLA(data_width : Int) extends Module{
 
 object gen_CLA extends App{
   val dws = List(8,16,32,64)
-  def gen(dw : Int) = {
+  private def gen(dw : Int) = {
     chisel3.Driver.execute(args,()=>{
       val module = new CLA(dw)
       module
     })
   }
-  for(dw <- dws){
-    gen(dw)
-    println(s"Gen $dw")
-    moveRenameFile("CLA.v","CLA_" + dw + ".v")
-  }
+  dws.map(gen _)
 }

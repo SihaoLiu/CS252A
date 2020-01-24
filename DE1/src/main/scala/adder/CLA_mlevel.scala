@@ -1,23 +1,14 @@
+package adder
+
 import DEUtil.DEUtil.moveRenameFile
 import chisel3._
 import chisel3.util._
-import component.CLG
-
-import scala.math._
+import component.{CLG, StdAddIO}
 
 class CLA_mlevel(data_width: Int, group_width: Int) extends Module {
-  val io = IO(new Bundle{
-    // Input
-    val x: UInt = Input(UInt(data_width.W))
-    val y: UInt = Input(UInt(data_width.W))
-    val cin: Bool = Input(Bool())
+  val io = IO(new StdAddIO(data_width))
 
-    // Output
-    val s: UInt = Output(UInt(data_width.W))
-    val cout: Bool = Output(Bool())
-  })
-
-  // Create CLA, Connect Input
+  // Create adder.CLA, Connect Input
   val num_CLA = data_width / group_width
   val CLAs = for(idx <- 0 until num_CLA) yield {
     val cla = Module(new CLA(group_width)).io
@@ -114,7 +105,7 @@ object gen_CLA_mlevel extends App{
       if(gw < dw){
         println(s"Gen dw = $dw, gw = $gw")
         gen(dw,gw)
-        moveRenameFile("CLA_mlevel.v", "CLA_mlevel_" + dw + "_" + gw + ".v")
+        moveRenameFile("adder.CLA_mlevel.v", "CLA_mlevel_" + dw + "_" + gw + ".v")
       }
     }
   }

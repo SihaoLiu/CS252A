@@ -1,22 +1,16 @@
+package adder
+
+import DEUtil.DEUtil._
 import chisel3._
 import chisel3.util._
-import DEUtil.DEUtil._
+import component.StdAddIO
 class CSK(data_width : Int, group_width : Int) extends Module{
-  val io = IO(new Bundle{
-    // Input
-    val x = Input(UInt(data_width.W))
-    val y = Input(UInt(data_width.W))
-    val cin = Input(Bool())
-
-    // Output
-    val s = Output(UInt(data_width.W))
-    val cout = Output(Bool())
-  })
+  val io = IO(new StdAddIO(data_width))
 
   // Only consider data_width is multiple of group_width
   require(data_width % group_width == 0)
 
-  // Create CRA group
+  // Create adder.CRA group
   val num_group : Int = data_width / group_width
   val cra_chain = for(cra_idx <- 0 until num_group) yield {
     val cra = Module(new CRA(group_width)).io
@@ -55,7 +49,7 @@ class CSK(data_width : Int, group_width : Int) extends Module{
 
 object gen_CSK extends App{
 
-  def gen(dw : Int, gw: Int) = {
+  private def gen(dw : Int, gw: Int) = {
     chisel3.Driver.execute(args,()=>{
       val module = new CSK(dw,gw)
       module
@@ -69,7 +63,7 @@ object gen_CSK extends App{
       if(gw < dw){
         println(s"Gen dw = $dw, gw = $gw")
         gen(dw,gw)
-        moveRenameFile("CSK.v", "CSK_" + dw + "_" + gw + ".v")
+        moveRenameFile("adder.CSK.v", "CSK_" + dw + "_" + gw + ".v")
       }
     }
   }
