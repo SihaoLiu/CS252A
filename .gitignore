@@ -1,0 +1,13 @@
+# Syn
+*.fir
+*.json
+*.v
+*.log
+*.xml
+*syn*
+*target*
+*project*
+*test_run_dir*
+
+# IntelliJ IDEA
+*.xml
