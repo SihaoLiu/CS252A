@@ -4,10 +4,11 @@
 *.v
 *.log
 *.xml
-*syn*
-*target*
-*project*
-*test_run_dir*
+*/syn*
+*/target*
+*/project*
+*/test_run_dir*
 
 # IntelliJ IDEA
 *.xml
+*/.idea
