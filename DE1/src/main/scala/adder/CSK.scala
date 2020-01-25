@@ -5,6 +5,9 @@ import chisel3._
 import chisel3.util._
 import component.StdAddIO
 class CSK(data_width : Int, group_width : Int) extends Module{
+
+  suggestName(s"CSK_dw_$data_width")
+
   val io = IO(new StdAddIO(data_width))
 
   // Only consider data_width is multiple of group_width

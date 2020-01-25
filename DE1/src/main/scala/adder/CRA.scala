@@ -4,6 +4,9 @@ import chisel3._
 import component.{FA1, StdAddIO_gp}
 
 class CRA(data_width : Int) extends Module{
+
+  suggestName(s"CRA_dw_$data_width")
+
   val io = IO(new StdAddIO_gp(data_width))
 
   // Create Full Adder Chain

@@ -6,6 +6,8 @@ import component.{CLG, StdAddIO}
 
 class CLA_2level(data_width : Int, group_width : Int) extends Module{
 
+  suggestName(s"CLA_2level_dw_${data_width}_gr_$group_width")
+
   val io = IO(new StdAddIO(data_width))
 
   // Create adder.CLA, Connect Input

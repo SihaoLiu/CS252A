@@ -3,7 +3,7 @@ package adder
 import scala.math._
 import AdderTestUtil.AdderTestUtil._
 import chisel3.util._
-import chisel3.iotesters.{Driver, PeekPokeTester}
+import chisel3.iotesters._
 import scala.util.Random._
 import scala.collection.mutable
 
@@ -13,7 +13,9 @@ object test_adder extends App{
   val data_width : Int = 64
   val group_width : Int = 8
 
-  val testResult : Boolean= Driver.execute(args,() => new CLA_2level(data_width, group_width)){
+  val testResult : Boolean= Driver.execute(
+    args,() => new CLA_2level(data_width, group_width))
+  {
     dut => new PeekPokeTester[CLA_2level](dut) {
       for(cycle <- 0 until 100){
         val x : BigInt = BigInt(data_width, scala.util.Random)
@@ -41,4 +43,8 @@ object test_adder extends App{
     }
   }
   assert(testResult)
+}
+
+object adder_repl extends App {
+  Driver.executeFirrtlRepl(args, ()=> new CLA_2level(64, 8))
 }

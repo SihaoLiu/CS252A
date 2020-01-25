@@ -4,24 +4,42 @@ import DEUtil.DEUtil.moveRenameFile
 import chisel3._
 import chisel3.util._
 import component.{CLG, StdAddIO}
+import scala.math._
 
-class CLA_mlevel(data_width: Int, group_width: Int) extends Module {
+class CLA_mlevel(data_width: Int, num_level: Int) extends Module {
+
+  suggestName(s"CLA_${num_level}level")
+
   val io = IO(new StdAddIO(data_width))
 
-  // Create adder.CLA, Connect Input
-  val num_CLA = data_width / group_width
+  val group_width : Int = round(pow(data_width.toFloat, 1.0/num_level.toFloat).toFloat)
+
+  // Create Carry-in Lines
+  val Cin_lines : Vec[Bool] = VecInit(Seq.fill(num_CLA)(WireInit(false.B)))
+  Cin_lines.head := io.cin
+
+  // Level 1: Create adder.CLA, Connect Input
+  private val num_CLA : Int = data_width / group_width
   val CLAs = for(idx <- 0 until num_CLA) yield {
     val cla = Module(new CLA(group_width)).io
     cla.x := io.x(group_width * (idx + 1) - 1, idx * group_width)
     cla.y := io.y(group_width * (idx + 1) - 1, idx * group_width)
-    if(idx == 0){
-      cla.cin := io.cin
-    }
+    cla.cin := Cin_lines(idx)
     cla
   }
 
   // Connect Sum
   io.s := CLAs.map(_.s).reverse.reduce(Cat(_,_))
+
+  // Level 2 - n : Create CLGs
+  val CLGs_mlevel = for(level_idx <- 1 until num_level) yield {
+    val num_CLG : Int = num_CLA / round(pow(group_width, level_idx)).toInt
+    val CLGs = VecInit(Seq.fill(num_CLG)(Module(new CLG(group_width)).io))
+    CLGs
+  }
+
+  // Connect G, A, Cin
+  for(level_idx <- )
 
   // Define Connect Through CLG
   def connect_through_CLG(g: UInt, a: UInt, Cin: Vec[Bool])
@@ -109,4 +127,5 @@ object gen_CLA_mlevel extends App{
       }
     }
   }
+
 }

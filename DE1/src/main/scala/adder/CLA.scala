@@ -6,6 +6,8 @@ import component.{CLG, GPA1, StdAddIO_GA}
 
 class CLA(data_width : Int) extends Module{
 
+  suggestName(s"CLA_dw_$data_width")
+
   val io = IO(new StdAddIO_GA(data_width))
 
   // GPA chain
