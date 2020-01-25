@@ -39,7 +39,9 @@ class CLA_mlevel(data_width: Int, num_level: Int) extends Module {
   }
 
   // Connect G, A, Cin
-  for(level_idx <- )
+  for(level_idx <- 1 until num_level){
+
+  }
 
   // Define Connect Through CLG
   def connect_through_CLG(g: UInt, a: UInt, Cin: Vec[Bool])
