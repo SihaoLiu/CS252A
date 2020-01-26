@@ -12,14 +12,14 @@ class CLA_mlevel(data_width: Int, num_level: Int) extends Module {
 
   val io = IO(new StdAddIO(data_width))
 
-  val group_width : Int = round(pow(data_width.toFloat, 1.0/num_level.toFloat).toFloat)
+  private val group_width : Int = round(pow(data_width.toFloat, 1.0/num_level.toFloat).toFloat)
+  private val num_CLA : Int = data_width / group_width
 
   // Create Carry-in Lines
   val Cin_lines : Vec[Bool] = VecInit(Seq.fill(num_CLA)(WireInit(false.B)))
   Cin_lines.head := io.cin
 
   // Level 1: Create adder.CLA, Connect Input
-  private val num_CLA : Int = data_width / group_width
   val CLAs = for(idx <- 0 until num_CLA) yield {
     val cla = Module(new CLA(group_width)).io
     cla.x := io.x(group_width * (idx + 1) - 1, idx * group_width)
@@ -33,101 +33,78 @@ class CLA_mlevel(data_width: Int, num_level: Int) extends Module {
 
   // Level 2 - n : Create CLGs
   val CLGs_mlevel = for(level_idx <- 1 until num_level) yield {
-    val num_CLG : Int = num_CLA / round(pow(group_width, level_idx)).toInt
-    val CLGs = VecInit(Seq.fill(num_CLG)(Module(new CLG(group_width)).io))
+    val cover_bits : Int = round(pow(group_width, level_idx)).toInt
+    val num_CLG : Int = num_CLA / cover_bits
+    val CLGs = for(clg_idx <- 0 until num_CLG) yield {
+      val clg = Module(new CLG(group_width)).io
+      // Connect Cin
+      clg.cin := Cin_lines(cover_bits * clg_idx)
+      clg
+    }
     CLGs
   }
 
   // Connect G, A, Cin
   for(level_idx <- 1 until num_level){
-
-  }
-
-  // Define Connect Through CLG
-  def connect_through_CLG(g: UInt, a: UInt, Cin: Vec[Bool])
-  :(Bool, Bool, Bool, Bool) = { // G, A, Cin, Cout
-    require(a.getWidth == g.getWidth)
-    val width = g.getWidth
-    val CLG = Module(new CLG(width)).io
-    CLG.g := g
-    CLG.a := a
-    val nxt_in : Bool = Wire(Bool())
-    CLG.cin := nxt_in
-    for(idx <- 0 until width){
-      println(s"CLG @ $idx")
-      val cin = Cin(idx)
-      if(idx > 0){
-        cin := CLG.c(idx - 1)
+    val cover_bits : Int = round(pow(group_width, level_idx)).toInt
+    val num_CLG : Int = num_CLA / cover_bits
+    val CLGs = CLGs_mlevel(level_idx - 1)
+    val prev_level_GA : IndexedSeq[(Bool, Bool)]=
+      if(level_idx == 1){
+        CLAs.map(ga => (ga.G, ga.A))
       }else{
-        cin := nxt_in
+        CLGs_mlevel(level_idx - 2).map(ga => (ga.G, ga.A))
       }
-    }
-    (CLG.G, CLG.A, nxt_in, CLG.c(width - 1))
-  }
-
-  def reduce_connect_CLG(gs : Vec[Bool], as : Vec[Bool], Cins : Vec[Bool], Couts : Vec[Bool])
-  : Bool = {
-    val width = gs.length
-    println(s"Width = $width")
-    if(width % group_width == 0){
-      val gs_group = gs.grouped(group_width).toIndexedSeq
-      val as_group = as.grouped(group_width).toIndexedSeq
-      val Cins_group = Cins.grouped(group_width).toIndexedSeq
-      require(gs_group.length == as_group.length && as_group.length == Cins_group.length)
-      val g_a_cin_cout_group : Seq[(Bool, Bool, Bool, Bool)] =
-        for(group_idx <- gs_group.indices) yield {
-          println(s"Group @ $group_idx")
-        val g : UInt = VecInit(gs_group(group_idx)).asUInt()
-        val a : UInt = VecInit(as_group(group_idx)).asUInt()
-        val Cin : Vec[Bool] = VecInit(Cins_group(group_idx))
-        connect_through_CLG(g, a, Cin)
+    // Require this level num * group_width = previous level
+    val prev_num = prev_level_GA.length
+    val this_num = CLGs.length
+    require(this_num == num_CLG)
+    require(this_num * group_width == prev_num)
+    // Connect G, A
+    for((prev_ga,idx) <-
+          prev_level_GA.grouped(group_width).zipWithIndex){
+      val clg = CLGs(idx)
+      // Connect G, A
+      clg.g := VecInit(prev_ga.map(_._1)).asUInt()
+      clg.a := VecInit(prev_ga.map(_._2)).asUInt()
+      // Connect Cout
+      for(cout_idx <- 0 until group_width - 1){
+        // Last Count bit is not used
+        Cin_lines(idx * cover_bits + (cover_bits / group_width) * (1+cout_idx)) :=
+          clg.c(cout_idx)
       }
-      val nxt_gs : Vec[Bool] = VecInit(g_a_cin_cout_group.map(_._1))
-      val nxt_as : Vec[Bool] = VecInit(g_a_cin_cout_group.map(_._2))
-      val nxt_Cin : Vec[Bool] = VecInit(g_a_cin_cout_group.map(_._3))
-      val nxt_Cout : Vec[Bool] = VecInit(g_a_cin_cout_group.map(_._4))
-      nxt_Cin.head := io.cin // First CLG
-      reduce_connect_CLG(nxt_gs, nxt_as, nxt_Cin, nxt_Cout)
-    }else{
-      for(idx <- 0 until width){
-        if(idx > 0){
-          println(s"Ripple Cin @ $idx")
-          Cins(idx) := Couts(idx - 1)
-        }else{
-          Cins(idx) := io.cin
-        }
-      }
-      Couts(width - 1)
     }
   }
 
-  val gs : Vec[Bool] = VecInit(CLAs.map(_.G))
-  val as : Vec[Bool] = VecInit(CLAs.map(_.A))
-  val Cins : Vec[Bool] = VecInit(CLAs.map(_.cin))
-  val Couts : Vec[Bool] = VecInit(CLAs.map(_.cout))
-
-  io.cout := reduce_connect_CLG(gs,as,Cins,Couts)
+  // Actual Cout
+  io.cout := CLGs_mlevel.last.last.c(group_width - 1)
 }
 
 object gen_CLA_mlevel extends App{
 
-  def gen(dw : Int, gw: Int) = {
+  def gen(dw : Int, nl: Int) = {
     chisel3.Driver.execute(args,()=>{
-      val module = new CLA_mlevel(dw,gw)
+      val module = new CLA_mlevel(dw,nl)
       module
     })
   }
 
-  val group_widths = List(2,4,8,16,32)
+  def can_build(dw:Int, nl: Int): Boolean = {
+    val act_gw : Double = pow(dw.toFloat, 1.0/nl.toFloat)
+    val nearest_gw : Double = round(act_gw.toFloat).toDouble
+    abs(act_gw - nearest_gw) <= 0.0001
+  }
+
   val data_widths = List(16,32,64)
+  val num_levels = List(2,3,4,5,6,7,8)
   if(true){
-    for(dw <- data_widths; gw <- group_widths){
-      if(gw < dw){
-        println(s"Gen dw = $dw, gw = $gw")
-        gen(dw,gw)
-        moveRenameFile("adder.CLA_mlevel.v", "CLA_mlevel_" + dw + "_" + gw + ".v")
-      }
+    for(dw <- data_widths; nl <- num_levels if can_build(dw, nl)){
+      println(s"Gen dw = $dw, gw = $nl")
+      gen(dw,nl)
+      moveRenameFile("CLA_mlevel.v", "CLA_mlevel_" + dw + "_" + nl + ".v")
     }
+  }else{
+    gen(64, 3)
   }
 
 }

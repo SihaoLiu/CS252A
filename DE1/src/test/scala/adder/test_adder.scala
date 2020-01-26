@@ -14,9 +14,9 @@ object test_adder extends App{
   val group_width : Int = 8
 
   val testResult : Boolean= Driver.execute(
-    args,() => new CLA_2level(data_width, group_width))
+    args,() => new CLA_mlevel(data_width, 3))
   {
-    dut => new PeekPokeTester[CLA_2level](dut) {
+    dut => new PeekPokeTester(dut) {
       for(cycle <- 0 until 100){
         val x : BigInt = BigInt(data_width, scala.util.Random)
         val y : BigInt = BigInt(data_width, scala.util.Random)
