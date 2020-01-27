@@ -13,11 +13,7 @@ class GPA1 extends Module{
     val p = Output(Bool())
     val a = Output(Bool())
   })
-
-  val g = io.x & io.y
-  val p = io.x ^ io.y
-
-  io.g := g
-  io.p := p
-  io.a := g | p
+  io.g := io.x & io.y
+  io.p := io.x ^ io.y
+  io.a := io.x | io.y
 }

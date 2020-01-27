@@ -1,3 +1,6 @@
+# Scala
+*.sc
+
 # Syn
 ucli.key
 *.fir

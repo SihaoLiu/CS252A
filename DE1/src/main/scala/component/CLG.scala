@@ -20,9 +20,7 @@ class CLG(width : Int) extends Module{
     if(i == 0){
       (gi, ai)
     }else{
-      val prev_ga = calculate_ga(i - 1)
-      val prev_g = prev_ga._1
-      val prev_a = prev_ga._2
+      val (prev_g, prev_a) = calculate_ga(i - 1)
       (gi | (prev_g & ai), ai & prev_a)
     }
   }
@@ -35,9 +33,7 @@ class CLG(width : Int) extends Module{
 
   // Output C
   val c_bit = for(c_idx <- 0 until width) yield {
-    val this_ga = ga_chain(c_idx)
-    val this_g = this_ga._1
-    val this_a = this_ga._2
+    val (this_g,this_a) = ga_chain(c_idx)
     this_g | (this_a & io.cin)
   }
   io.c := VecInit(c_bit).asUInt()
