@@ -14,10 +14,10 @@ object test_adder extends App{
   val group_width : Int = 8
 
   val testResult : Boolean= Driver.execute(
-    args,() => new CLA_mlevel(data_width, 3))
+    args,() => new CondSumAdder(data_width, group_width, true))
   {
     dut => new PeekPokeTester(dut) {
-      for(cycle <- 0 until 100){
+      for(cycle <- 0 until 1000){
         val x : BigInt = BigInt(data_width, scala.util.Random)
         val y : BigInt = BigInt(data_width, scala.util.Random)
         val cin : BigInt = BigInt(1, scala.util.Random)
@@ -35,7 +35,22 @@ object test_adder extends App{
         val s_hw = peek(dut.io.s)
         val cout_hw = peek(dut.io.cout)
 
-        println(s"$x + $y with $cin = $s with $cout, got $s_hw with $cout_hw")
+        if(!args.contains("vcs"))
+          println(s"$x + " +
+          s"$y with " +
+          s"$cin = " +
+          s"$s with " +
+          s"$cout, " +
+          s"got $s_hw with " +
+          s"$cout_hw")
+
+        if(false) println(s"b\'${x.toString(2)} + " +
+          s"b\'${y.toString(2)} with " +
+          s"b\'${cin.toString(2)} = " +
+          s"b\'${s.toString(2)} with " +
+          s"b\'${cout.toString(2)}, " +
+          s"got b\'${s_hw.toString(2)} with " +
+          s"b\'${cout_hw.toString(2)}")
 
         expect(dut.io.s, s)
         expect(dut.io.cout, cout)

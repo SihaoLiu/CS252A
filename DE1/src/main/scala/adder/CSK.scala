@@ -66,7 +66,7 @@ object gen_CSK extends App{
       if(gw < dw){
         println(s"Gen dw = $dw, gw = $gw")
         gen(dw,gw)
-        moveRenameFile("adder.CSK.v", "CSK_" + dw + "_" + gw + ".v")
+        moveRenameFile("CSK.v", "CSK_" + dw + "_" + gw + ".v")
       }
     }
   }

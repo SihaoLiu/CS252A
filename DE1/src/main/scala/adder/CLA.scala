@@ -43,6 +43,8 @@ class CLA(data_width : Int) extends Module{
   io.A := CLG.A
 }
 
+import DEUtil.DEUtil.moveRenameFile
+
 object gen_CLA extends App{
   val dws = List(8,16,32,64)
   private def gen(dw : Int) = {
@@ -51,5 +53,8 @@ object gen_CLA extends App{
       module
     })
   }
-  dws.map(gen _)
+  dws.foreach(dw => {
+    gen(dw);
+    moveRenameFile("CLA.v", s"CLA_dw_$dw.v")
+  })
 }

@@ -6,7 +6,7 @@ import chisel3.util._
 import component.{CLG, StdAddIO}
 import scala.math._
 
-class CLA_mlevel(data_width: Int, num_level: Int) extends Module {
+class CLAmlevel(data_width: Int, num_level: Int) extends Module {
 
   suggestName(s"CLA_${num_level}level")
 
@@ -84,7 +84,7 @@ object gen_CLA_mlevel extends App{
 
   def gen(dw : Int, nl: Int) = {
     chisel3.Driver.execute(args,()=>{
-      val module = new CLA_mlevel(dw,nl)
+      val module = new CLAmlevel(dw,nl)
       module
     })
   }
@@ -101,7 +101,7 @@ object gen_CLA_mlevel extends App{
     for(dw <- data_widths; nl <- num_levels if can_build(dw, nl)){
       println(s"Gen dw = $dw, gw = $nl")
       gen(dw,nl)
-      moveRenameFile("CLA_mlevel.v", "CLA_mlevel_" + dw + "_" + nl + ".v")
+      moveRenameFile("CLAmlevel.v", "CLAmlevel_" + dw + "_" + nl + ".v")
     }
   }else{
     gen(64, 3)
