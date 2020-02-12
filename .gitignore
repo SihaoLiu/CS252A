@@ -20,4 +20,4 @@ ucli.key
 
 # IntelliJ IDEA
 *.xml
-*/.idea
+*.idea*
