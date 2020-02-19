@@ -15,14 +15,14 @@ object MultUtil {
   }
 
   def get_multiple(y : UInt, x : UInt) : UInt = {
-    val x_2complant : UInt = Cat(~x(11), ~x) + 1.U
+    val neg : UInt = Cat(1.U(1.W), ~x) + 1.U
     require(x.getWidth == 12)
     val muxLookup : Seq[(UInt, UInt)] =
       Seq(
         (1.U(3.W), Cat(0.U(2.W),x)),
         (2.U(3.W), Cat(0.U(1.W), x, 0.U(1.W))),
-        (5.U(3.W), Cat(x_2complant(12), x_2complant)),
-        (6.U(3.W), Cat(x_2complant, 0.U(1.W)))
+        (5.U(3.W), Cat(neg(12), neg)),
+        (6.U(3.W), Cat(neg, 0.U(1.W)))
       )
     MuxLookup(y, 0.U, muxLookup)
   }

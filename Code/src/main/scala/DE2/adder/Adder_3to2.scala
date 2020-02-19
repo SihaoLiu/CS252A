@@ -1,5 +1,6 @@
 package DE2.adder
 
+import DE1.component.FA1
 import chisel3._
 import chisel3.util._
 import DE2.util.MultUtil._
@@ -7,7 +8,7 @@ import DE2.util.MultUtil._
 
 class Adder_3to2(bit_width : Int) extends Module{
 
-  suggestName(s"Adder_3to2_width_${bit_width}")
+  suggestName(s"CSA_3to2_width_${bit_width}")
 
   val io = IO(new Bundle {
     // Input
@@ -19,9 +20,16 @@ class Adder_3to2(bit_width : Int) extends Module{
     val c = Output(UInt(bit_width.W))
   })
 
-  io.s := io.x ^ io.y ^ io.z
-  val c = for(idx <- 0 until bit_width) yield {
-    majority(io.x(idx), io.y(idx), io.z(idx))
+  val fa_chain = for(idx <- 0 until bit_width) yield {
+    val fa = Module(new FA1).io
+    fa.cin := io.x(idx)
+    fa.x := io.y(idx)
+    fa.y := io.z(idx)
+    fa
   }
-  io.c := VecInit(c).asUInt()
+  io.s := VecInit(fa_chain.map(_.s)).asUInt()
+  io.c := VecInit(fa_chain.map(_.cout)).asUInt()
+
+  //printf(p"3 to 2: True Result = $true_result, " +
+  //  p"Calculated Result = ${io.s + (io.c << 1).asUInt()}\n")
 }

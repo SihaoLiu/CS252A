@@ -10,12 +10,12 @@ import scala.collection.mutable
 object test_mult extends App{
 
   val testResult : Boolean= Driver.execute(
-    args,() => new mult_r4_12x12_lsdf)
+    args,() => new mult_r2_vand_12x12)
   {
     dut => new PeekPokeTester(dut) {
-      for(cycle <- 0 until 1000){
-        val x : BigInt = BigInt(12, scala.util.Random)
-        val y : BigInt = BigInt(12, scala.util.Random)
+      for(_ <- 0 until 10000){
+        val x : BigInt = BigInt(12,scala.util.Random)
+        val y : BigInt = BigInt(12,scala.util.Random)
 
         val temp_s : BigInt = x * y
         val s : BigInt = temp_s.B2B(24)
