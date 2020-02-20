@@ -15,16 +15,22 @@ object MultUtil {
   }
 
   def get_multiple(y : UInt, x : UInt) : UInt = {
-    val neg : UInt = Cat(1.U(1.W), ~x) + 1.U
-    require(x.getWidth == 12)
+    val width = x.getWidth
+    val sign = y(2)
+    val X = Cat(0.U(1.W), x)
+    val X2= Cat(x, 0.U(1.W))
+    val negX = (~X).asUInt() + 1.U
+    val negX2 = (~X2).asUInt() + 1.U
+    val not_zero_multiplicand : Bool = x.orR()
+    require(width == 12)
     val muxLookup : Seq[(UInt, UInt)] =
       Seq(
-        (1.U(3.W), Cat(0.U(2.W),x)),
-        (2.U(3.W), Cat(0.U(1.W), x, 0.U(1.W))),
-        (5.U(3.W), Cat(neg(12), neg)),
-        (6.U(3.W), Cat(neg, 0.U(1.W)))
+        (1.U(3.W), Cat(sign, X)),
+        (2.U(3.W), Cat(sign, X2)),
+        (5.U(3.W), Cat(sign, negX)),
+        (6.U(3.W), Cat(sign, negX2))
       )
-    MuxLookup(y, 0.U, muxLookup)
+    Mux(not_zero_multiplicand, MuxLookup(y, 0.U(14.W), muxLookup), 0.U(14.W))
   }
 
   def majority(i1: Bool , i2: Bool, i3: Bool): Bool = {

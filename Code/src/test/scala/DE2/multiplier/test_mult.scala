@@ -13,7 +13,7 @@ object test_mult extends App{
     args,() => new mult_r2_vand_12x12)
   {
     dut => new PeekPokeTester(dut) {
-      for(_ <- 0 until 10000){
+      for(_ <- 0 until 1000){
         val x : BigInt = BigInt(12,scala.util.Random)
         val y : BigInt = BigInt(12,scala.util.Random)
 
