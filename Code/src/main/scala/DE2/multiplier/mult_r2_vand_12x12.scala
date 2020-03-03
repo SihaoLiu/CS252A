@@ -1,9 +1,10 @@
 package DE2.multiplier
+
 import DE1.adder.CarrySelectAdder
 import DE2.adder._
 import chisel3._
 import chisel3.util._
-import DE2.util.MultUtil._
+
 class mult_r2_vand_12x12 extends Module{
   val io = IO(new Bundle{
     val x = Input(UInt(12.W))
@@ -23,7 +24,7 @@ class mult_r2_vand_12x12 extends Module{
     sc
   }
 
-  // Connect Sequence
+  // Connect Sequentially
   for(idx <- 0 until 10) yield {
     val prev_sc = {
       if(idx == 0){

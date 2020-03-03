@@ -27,9 +27,7 @@ class Adder_3to2(bit_width : Int) extends Module{
     fa.y := io.z(idx)
     fa
   }
+
   io.s := VecInit(fa_chain.map(_.s)).asUInt()
   io.c := VecInit(fa_chain.map(_.cout)).asUInt()
-
-  //printf(p"3 to 2: True Result = $true_result, " +
-  //  p"Calculated Result = ${io.s + (io.c << 1).asUInt()}\n")
 }

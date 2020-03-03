@@ -7,29 +7,30 @@ import chisel3.util._
 import DE2.util.MultUtil._
 
 /*
+
 Add[4:2] - 20 bits
-                XX XXXX XXXX XXXX
-              XXXX XXXX XXXX XX
-           XX XXXX XXXX XXXX
-         XXXX XXXX XXXX XX
+X0                XX XXXX XXXX XXXX
+X1              XXXX XXXX XXXX XX
+X2           XX XXXX XXXX XXXX
+X3         XXXX XXXX XXXX XX
 
 Add[4:2] - 24 bits
-         SSSS SSSS SSSS SSSS SSSS
-       C CCCC CCCC CCCC CCCC CCC
-      XX XXXX XXXX XXXX
-    XXXX XXXX XXXX XX
+S1         SSSS SSSS SSSS SSSS SSSS
+C1       C CCCC CCCC CCCC CCCC CCC
+X4      XX XXXX XXXX XXXX
+X5    XXXX XXXX XXXX XX
 
 Add[3:2] - 24 bits
-    SSSS SSSS SSSS SSSS SSSS SSSS
-  C CCCC CCCC CCCC CCCC CCCC CCC
- XX XXXX XXXX XXXX
+S2    SSSS SSSS SSSS SSSS SSSS SSSS
+C2  C CCCC CCCC CCCC CCCC CCCC CCC
+X6 XX XXXX XXXX XXXX
 
 CSA - 24 bits
-    SSSS SSSS SSSS SSSS SSSS SSSS
-  C CCCC CCCC CCCC CCCC CCCC CCC
+S3    SSSS SSSS SSSS SSSS SSSS SSSS
+C3  C CCCC CCCC CCCC CCCC CCCC CCC
 
 Result - 24 bits
-  	SSSS SSSS SSSS SSSS SSSS SSSS
+S4  	SSSS SSSS SSSS SSSS SSSS SSSS
 
  */
 
@@ -47,10 +48,7 @@ class mult_r4_12x12_lsdf extends Module{
   // Recode and Generate the Multiples
   val multiples = for(idx <- 0 to 12 by 2) yield {
     val booth = recode(extend_x(idx + 2, idx))
-    //printf(p"original = ${extend_x(idx + 2, idx)}, original booth = $booth, booth $idx = ${booth.asSInt()}\n")
     val mg = get_multiple(booth, io.y)
-    //printf(p"original y = ${io.y}, booth = $booth, signed y = ${mg.asSInt()}\n")
-    //printf(p"original = ${io.y}, booth = ${booth}, multiple $idx = ${mg.asSInt()}\n")
     mg
   }
 

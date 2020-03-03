@@ -23,15 +23,11 @@ class Adder_4to2(bit_width:Int) extends Module{
   adder_3to2_1st.y := io.x
   adder_3to2_1st.z := io.y
 
-  val adder_3to2_2nd = Module(new Adder_3to2(bit_width+1)).io
+  val adder_3to2_2nd = Module(new Adder_3to2(bit_width)).io
   adder_3to2_2nd.x := adder_3to2_1st.s
-  adder_3to2_2nd.y := Cat(adder_3to2_1st.c, 0.U(1.W))
+  adder_3to2_2nd.y := adder_3to2_1st.c << 1
   adder_3to2_2nd.z := io.z
 
   io.s := adder_3to2_2nd.s
   io.c := adder_3to2_2nd.c
-
-  val true_result : UInt = (io.w +& io.x +& io.y +& io.z).apply(bit_width+2, 0)
-  //printf(p"4 to 2: True Result = $true_result, " +
-  //  p"Calculated Result = ${io.s + (io.c << 1).asUInt()}\n")
 }

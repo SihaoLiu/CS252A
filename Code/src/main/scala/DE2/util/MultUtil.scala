@@ -1,5 +1,6 @@
 package DE2.util
 
+import DE1.component.HA1
 import chisel3._
 import chisel3.util._
 
@@ -13,15 +14,34 @@ object MultUtil {
       y(1) ^ y(0)
     )
   }
+  // Add one by using half adder
+  def add_one(num : UInt) : UInt = {
+    val width = num.getWidth
+    val ha_chain = for(idx <- 1 until width) yield {
+      val ha = Module(new HA1).io
+      ha.x := num(idx)
+      ha
+    }
+    for(idx <- 0 until width - 1){
+      val ha = ha_chain(idx)
+      if(idx > 0){
+        ha.y := ha_chain(idx - 1).cout
+      }else{
+        ha.y := num(idx)
+      }
+    }
+    val main_sum = VecInit(ha_chain.map(_.s)).asUInt()
+    Cat(main_sum, ~num(0))
+  }
 
   def get_multiple(y : UInt, x : UInt) : UInt = {
     val width = x.getWidth
-    val sign = y(2)
     val X = Cat(0.U(1.W), x)
     val X2= Cat(x, 0.U(1.W))
-    val negX = (~X).asUInt() + 1.U
-    val negX2 = (~X2).asUInt() + 1.U
+    val negX = add_one((~X).asUInt())
+    val negX2 = add_one((~X2).asUInt())
     val not_zero_multiplicand : Bool = x.orR()
+    val sign = y(2) & not_zero_multiplicand
     require(width == 12)
     val muxLookup : Seq[(UInt, UInt)] =
       Seq(
@@ -30,7 +50,7 @@ object MultUtil {
         (5.U(3.W), Cat(sign, negX)),
         (6.U(3.W), Cat(sign, negX2))
       )
-    Mux(not_zero_multiplicand, MuxLookup(y, 0.U(14.W), muxLookup), 0.U(14.W))
+    MuxLookup(y, 0.U(14.W), muxLookup)
   }
 
   def majority(i1: Bool , i2: Bool, i3: Bool): Bool = {

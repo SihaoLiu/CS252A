@@ -2,18 +2,16 @@ package DE2.multiplier
 
 import scala.math._
 import DE1.AdderTestUtil.AdderTestUtil._
-import chisel3.util._
 import chisel3.iotesters._
-import scala.util.Random._
-import scala.collection.mutable
+
 
 object test_mult extends App{
 
   val testResult : Boolean= Driver.execute(
-    args,() => new mult_r2_vand_12x12)
+    args,() => new mult_r4_12x12_msdf)
   {
     dut => new PeekPokeTester(dut) {
-      for(_ <- 0 until 1000){
+      for(_ <- 0 until 10000){
         val x : BigInt = BigInt(12,scala.util.Random)
         val y : BigInt = BigInt(12,scala.util.Random)
 
