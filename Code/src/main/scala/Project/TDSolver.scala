@@ -23,9 +23,9 @@ class TDSolver(radix:Int, precision:Int, size:Int) extends Module {
   val modules = for(idx <- 0 until size) yield {
     val (lower, upper) = tri(idx)
     val m = Module(new TDModule(radix, precision)).io
-    m.lower := lower
-    m.upper := upper
-    m.b_init := io.b(idx)
+    m.lower_a := lower
+    m.upper_a := upper
+    m.init_b := io.b(idx)
     m
   }
 
