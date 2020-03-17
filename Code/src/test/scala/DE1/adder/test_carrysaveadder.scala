@@ -8,21 +8,22 @@ import chisel3.iotesters._
 object test_carrysaveadder extends App {
 
   val precision : Int = 6
+  val total_cycle : Int = 1
 
   val testResult : Boolean= Driver.execute(
     args,() => new CarrySaveAdder(precision))
   {
     dut => new PeekPokeTester(dut) {
-      for(cycle <- 0 until 100){
-        val x : BigInt = BigInt(precision, scala.util.Random)
-        val y : BigInt = 0//BigInt(precision, scala.util.Random)
+      for(cycle <- 0 until total_cycle){
+        val x : BigInt = BigInt(precision - 1, scala.util.Random)
+        val y : BigInt = BigInt(precision - 1, scala.util.Random)
 
-        val isSub : Boolean = if (x >= y)scala.util.Random.nextBoolean() else false
+        val isSub : Boolean = true//scala.util.Random.nextBoolean()
 
-        val sum : BigInt = (if(isSub) x - y else x + y).B2B(precision)
+        val sum : BigInt = 0-x-y//(if(isSub) x - y else x + y).B2B(precision)
 
-        val ext_x = invert(x, false, precision)
-        val ext_y = invert(y, isSub, precision)
+        val ext_x = invert(x, true, precision)
+        val ext_y = invert(y, true, precision)
         poke(dut.io.x, ext_x)
         poke(dut.io.y, ext_y)
 
@@ -43,7 +44,7 @@ object test_carrysaveadder extends App {
 
         println(ext_x.toString(2) + notation + ext_y.toString(2) + " ->" +
           s" s = ${s_hw.toString(2)}, c = ${c_hw.toString(2)}, sc = ${sc_hw.toString(2)}, " +
-          s"s + c = " + sum_hw.toString(2))
+          s"s + c + 1= " + sum_hw.toString(2))
 
         assert(sum == sum_hw)
       }

@@ -13,10 +13,12 @@ class TDSolver(precision:Int, size:Int) extends Module {
 
   // Create the IO
   val io = IO(new Bundle{
-    val upper_As = Vec(size - 1, Input(UInt(precision.W)))
-    val lower_As = Vec(size - 1, Input(UInt(precision.W)))
+    // As are signed
+    val upper_As = Vec(size - 1, Input(UInt((precision).W)))
+    val lower_As = Vec(size - 1, Input(UInt((precision).W)))
+    // Bs in RBR
     val Bs = Vec(size, Input(UInt(num_bit.W)))
-
+    // Ys in RBR
     val Ys = Vec(size, Output(UInt(num_bit.W)))
   })
 
@@ -73,7 +75,7 @@ class TDSolver(precision:Int, size:Int) extends Module {
   }
 
   // debug
-  if(true){
+  if(false){
     printf(p"counter = $counter\n")
   }
 

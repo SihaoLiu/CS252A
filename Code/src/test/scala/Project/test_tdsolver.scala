@@ -19,16 +19,16 @@ object test_tdsolver  extends App{
         for(idx <- 0 until size){
           if(idx < size - 1){
             // Upper
-            val upper : BigInt = BigInt(precision,scala.util.Random)
+            val upper : BigInt = BigInt(precision - 2,scala.util.Random)
             val str_upper = fixLength(upper.toString(2), precision)
-            val real_upper : Double = prec2double(str_upper, 1.0, 0.0)
+            val real_upper : Double = sign_prec2double(str_upper)
             println(s"upper($idx) = $real_upper, " + str_upper + s", d\'${upper}")
             poke(dut.io.upper_As(idx),upper)
 
             // Lower
-            val lower : BigInt = BigInt(precision,scala.util.Random)
+            val lower : BigInt = BigInt(precision - 2,scala.util.Random)
             val str_lower = fixLength(lower.toString(2), precision)
-            val real_lower : Double = prec2double(str_lower, 1.0, 0.0)
+            val real_lower : Double = sign_prec2double(str_lower)
             println(s"lower(${idx + 1}) = $real_lower, b\'" + str_lower + s", d\'${lower}")
             poke(dut.io.lower_As(idx),lower)
           }
@@ -73,6 +73,32 @@ object test_tdsolver  extends App{
           case _ => 0.0
         }
         num_bit2double(num.substring(2), radix * 0.5, sum + value)
+      }
+    }
+  }
+
+  def invert_str(num : String, flip : String) : String = {
+    num match {
+      case "" => flip
+      case _ =>{
+        val head_char = num(0)
+        head_char match {
+          case '1' => invert_str(num.substring(1), flip + "0")
+          case '0' =>invert_str(num.substring(1), flip + "1")
+        }
+      }
+    }
+  }
+
+  def sign_prec2double(num:String) : Double = {
+    val body = num.substring(1)
+    num(0) match {
+      case '0' => prec2double(body, 1.0, 0.0)
+      case '1' =>{
+        val inv_str = invert_str(num, "")
+        val inv_bigint : BigInt = BigInt(inv_str, 2) + 1
+        val unsign_body : String = fixLength(inv_bigint.toString(2), precision - 1)
+        0.0 - prec2double(unsign_body , 1.0, 0.0)
       }
     }
   }
