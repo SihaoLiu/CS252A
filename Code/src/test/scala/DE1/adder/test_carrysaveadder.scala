@@ -15,7 +15,7 @@ object test_carrysaveadder extends App {
     dut => new PeekPokeTester(dut) {
       for(cycle <- 0 until 100){
         val x : BigInt = BigInt(precision, scala.util.Random)
-        val y : BigInt = BigInt(precision, scala.util.Random)
+        val y : BigInt = 0//BigInt(precision, scala.util.Random)
 
         val isSub : Boolean = if (x >= y)scala.util.Random.nextBoolean() else false
 

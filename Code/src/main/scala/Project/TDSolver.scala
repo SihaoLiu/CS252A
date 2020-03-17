@@ -23,13 +23,17 @@ class TDSolver(precision:Int, size:Int) extends Module {
   // Forming the triple input value of module
   val tri = (zero +: io.lower_As) zip (io.upper_As :+ zero)
 
+  // Create counter
+  val counter : UInt = RegInit(0.U(log2Ceil(precision + 1).W))
+
   // Create the Module
   val modules = for(idx <- 0 until size) yield {
     val (lower, upper) = tri(idx)
-    val m = Module(new TDModule(precision)).io
+    val m = Module(new TDModule(precision, idx)).io
     m.lower_a := lower
     m.upper_a := upper
     m.init_b := io.Bs(idx)
+    m.init := counter === 0.U
     m
   }
 
@@ -37,11 +41,6 @@ class TDSolver(precision:Int, size:Int) extends Module {
   val output_ds = Seq.fill(size)(
     RegInit(VecInit(Seq.fill(precision)(1.U(digit_bit.W))))
   )
-
-  // Create counter
-  val counter : UInt = RegInit(0.U(log2Ceil(precision + 1).W))
-  printf(p"counter = $counter\n")
-
 
   // Connect d
   for(idx <- 0 until size){
@@ -72,6 +71,12 @@ class TDSolver(precision:Int, size:Int) extends Module {
   for(idx <- 0 until size){
     io.Ys(idx) := output_ds(idx).reduce(Cat(_, _))
   }
+
+  // debug
+  if(true){
+    printf(p"counter = $counter\n")
+  }
+
 
 }
 
