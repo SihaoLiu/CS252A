@@ -2,47 +2,82 @@ package Project
 
 import chisel3._
 import chisel3.util._
+import Util._
 
-class TDSolver(radix:Int, precision:Int, size:Int) extends Module {
+class TDSolver(precision:Int, size:Int) extends Module {
   // Calculate how many bit need to represent a digit
   // using a redundant representation
-  val digit_bit = log2Ceil(2 * radix - 1)
+  val digit_bit = 2
   val num_bit = precision * digit_bit
-  val zero = 0.U(num_bit.W)
+  val zero = 0.U(precision.W)
+
   // Create the IO
   val io = IO(new Bundle{
-    val upper = Vec(size - 1, Input(UInt(num_bit.W)))
-    val lower = Vec(size - 1, Input(UInt(num_bit.W)))
-    val b = Vec(size, Input(UInt(num_bit.W)))
-    val y = Vec(size, Output(UInt(num_bit.W)))
+    val upper_As = Vec(size - 1, Input(UInt(precision.W)))
+    val lower_As = Vec(size - 1, Input(UInt(precision.W)))
+    val Bs = Vec(size, Input(UInt(num_bit.W)))
+
+    val Ys = Vec(size, Output(UInt(num_bit.W)))
   })
+
   // Forming the triple input value of module
-  val tri = (zero +: io.lower) zip (io.upper :+ zero)
+  val tri = (zero +: io.lower_As) zip (io.upper_As :+ zero)
 
   // Create the Module
   val modules = for(idx <- 0 until size) yield {
     val (lower, upper) = tri(idx)
-    val m = Module(new TDModule(radix, precision)).io
+    val m = Module(new TDModule(precision)).io
     m.lower_a := lower
     m.upper_a := upper
-    m.init_b := io.b(idx)
+    m.init_b := io.Bs(idx)
     m
   }
+
+  // Store Output Digits
+  val output_ds = Seq.fill(size)(
+    RegInit(VecInit(Seq.fill(precision)(1.U(digit_bit.W))))
+  )
+
+  // Create counter
+  val counter : UInt = RegInit(0.U(log2Ceil(precision + 1).W))
+  printf(p"counter = $counter\n")
+
 
   // Connect d
   for(idx <- 0 until size){
     val m = modules(idx)
     val prev_d = if(idx == 0){
-      0.S(digit_bit.W)
+      1.U(digit_bit.W)
     }else{
       modules(idx - 1).output_d
     }
     val nxt_d = if(idx == size - 1){
-      0.S(digit_bit.W)
+      1.U(digit_bit.W)
     }else{
       modules(idx + 1).output_d
     }
     m.lower_d := prev_d
     m.upper_d := nxt_d
   }
+
+  // FSM
+  when(counter < precision.U){
+    for(idx <- 0 until size){
+      output_ds(idx)(counter) := modules(idx).output_d
+    }
+    counter := counter + 1.U
+  }
+
+  // Output
+  for(idx <- 0 until size){
+    io.Ys(idx) := output_ds(idx).reduce(Cat(_, _))
+  }
+
+}
+
+object gen_TDSolver extends App {
+  chisel3.Driver.execute(args,()=>{
+    val module = new TDSolver(20, 5)
+    module
+  })
 }
