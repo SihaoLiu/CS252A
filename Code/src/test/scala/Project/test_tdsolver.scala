@@ -6,15 +6,15 @@ import scala.math.BigInt
 
 object test_tdsolver  extends App{
 
-  val precision : Int = 20
-  val size : Int = 20
-  val repeat_time = 1
+  val precision : Int = 50
+  val size : Int = 30
+  val repeat_time = 10
 
   val testResult : Boolean= Driver.execute(
     args,() => new TDSolver(precision, size))
   {
     dut => new PeekPokeTester(dut) {
-
+      var max_error = 0.0
       for(_ <- 0 until repeat_time){
 
         val A_matrix : Array[Array[Double]] = Array.fill(size, size)(0.0)
@@ -69,11 +69,16 @@ object test_tdsolver  extends App{
         }
         println(s"max error = $max_abs_error, average error = ${sum_abs_error / size}")
 
+        if(max_abs_error > max_error)
+          max_error = max_abs_error
+
         step(2)
         println("---------------------------------------")
         reset()
       }
 
+      println(s"After repeat $repeat_time, matrix size = $size, " +
+        s"precision = $precision, the max error = $max_error")
 
     }
   }

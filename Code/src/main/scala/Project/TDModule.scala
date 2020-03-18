@@ -55,9 +55,8 @@ class TDModule(precision:Int, index : Int) extends Module{
 
   // SEL
   val sign_nxt_w : Bool = nxt_w_signed(precision - 1)
-  val abs_nxt_w : UInt = (~nxt_w_signed).asUInt() + 1.U
-  val abs_nxt_w_add_half : UInt = abs_nxt_w + half_signed
-  val floor_one : Bool = abs_nxt_w_add_half(precision - 2)
+  val nxt_w_add_half : UInt = nxt_w_signed + half_signed
+  val floor_one : Bool = nxt_w_add_half(precision - 2)
   val lookup : Seq[(UInt, UInt)] = Seq(
     (0.U(digit_bit.W), 2.U(digit_bit.W)), // b'00 -> +0
     (1.U(digit_bit.W), 3.U(digit_bit.W)), // b'01 -> +1
@@ -107,7 +106,7 @@ class TDModule(precision:Int, index : Int) extends Module{
     printf(p"idx = $index, .. + upper_ad = ${Binary(csa2.cs)}\n")
     printf(p"idx = $index, .. + this_ad = ${Binary(csa3.cs)}\n")
     printf(p"idx = $index, next_w = ${Binary(nxt_w)}\n")
-    printf(p"idx = $index, |next_w| + 1/2 = ${Binary(abs_nxt_w_add_half)}\n")
+    printf(p"idx = $index, |next_w| + 1/2 = ${Binary(nxt_w_add_half)}\n")
   }
 
 
